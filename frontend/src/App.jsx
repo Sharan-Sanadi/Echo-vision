@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { AppProvider, useApp } from './context/AppContext'
 import { useWebSocket } from './hooks/useWebSocket'
 import { useCamera } from './hooks/useCamera'
+import { useTTS } from './hooks/useTTS'
 import CameraFeed from './components/Camera/CameraFeed'
 import ConnectionStatus from './components/StatusBar/ConnectionStatus'
 import ResponseOverlay from './components/Overlay/ResponseOverlay'
@@ -24,6 +25,7 @@ function AppInner() {
   const canvasRef = useRef(null)   // Phase 2: frame capture surface
   const [isStreaming, setIsStreaming] = useState(false)
 
+  const { speak } = useTTS()
   const { setLastResponse } = useApp()
 
   // Phase 2: Dummy connection test using the hook
@@ -31,6 +33,7 @@ function AppInner() {
     console.log('[App] Received from WS:', data)
     if (data.text) {
       setLastResponse(data.text)
+      speak(data.text) // Phase 6: Speak the response
     }
   })
 
