@@ -1,0 +1,47 @@
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: var(--radius, 4px);
+  background: var(--bg-glass, rgba(8, 8, 8, 0.72));
+  border: 1px solid var(--border, rgba(245, 166, 35, 0.18));
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+.status-pill--green .status-dot {
+  background: var(--green, #00ff88);
+  box-shadow: 0 0 6px var(--green, #00ff88);
+}
+.status-pill--green .status-label {
+  color: var(--green, #00ff88);
+}
+
+.status-pill--amber .status-dot {
+  background: var(--amber, #f5a623);
+  box-shadow: 0 0 6px var(--amber, #f5a623);
+  animation: pulse-amber 1.5s infinite;
+}
+.status-pill--amber .status-label {
+  color: var(--amber, #f5a623);
+}
+
+.status-pill--red .status-dot {
+  background: var(--red, #ff3b3b);
+  box-shadow: 0 0 6px var(--red, #ff3b3b);
+}
+.status-pill--red .status-label {
+  color: var(--red, #ff3b3b);
+}
