@@ -1,0 +1,38 @@
+.response-overlay {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 600px;
+  z-index: 200;
+  pointer-events: none;
+  animation: slide-up var(--transition) forwards;
+}
+
+.response-overlay__inner {
+  background: var(--bg-glass, rgba(8, 8, 8, 0.72));
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border, rgba(245, 166, 35, 0.18));
+  padding: 16px 20px;
+  border-radius: var(--radius, 4px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.response-overlay__tag {
+  font-size: 10px;
+  color: var(--amber, #f5a623);
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.response-overlay__text {
+  font-family: var(--font-display, sans-serif);
+  font-size: 18px;
+  color: var(--text, #e8e0d0);
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
