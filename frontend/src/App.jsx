@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { AppProvider, useApp } from './context/AppContext'
 import { useWebSocket } from './hooks/useWebSocket'
+import { useCamera } from './hooks/useCamera'
 import CameraFeed from './components/Camera/CameraFeed'
 import ConnectionStatus from './components/StatusBar/ConnectionStatus'
 import ResponseOverlay from './components/Overlay/ResponseOverlay'
@@ -22,6 +23,9 @@ function AppInner() {
   const videoRef  = useRef(null)   // Phase 2: camera stream target
   const canvasRef = useRef(null)   // Phase 2: frame capture surface
   const [isStreaming, setIsStreaming] = useState(false)
+
+  // Phase 3: Start camera
+  useCamera(videoRef)
 
   const { setLastResponse } = useApp()
 
