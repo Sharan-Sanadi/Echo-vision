@@ -1,13 +1,19 @@
 /**
- * useCamera — Phase 3
+ * useCamera — Phase 3 & 4
  *
  * Attaches getUserMedia() stream to a <video> element.
- * Frame capture will be added in Phase 4.
+ * Frame capture added in Phase 4.
  */
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { captureFrame } from '../utils/frameEncoder'
 
-export function useCamera(videoRef) {
+const CAPTURE_INTERVAL_MS = 350
+const JPEG_QUALITY = 0.72
+
+export function useCamera(videoRef, canvasRef, onFrame) {
+  const intervalRef = useRef(null)
+
   useEffect(() => {
     let activeStream = null
 
@@ -20,6 +26,13 @@ export function useCamera(videoRef) {
         if (videoRef.current) {
           videoRef.current.srcObject = stream
         }
+
+        if (onFrame) {
+          intervalRef.current = setInterval(() => {
+            const frameData = captureFrame(videoRef.current, canvasRef.current, JPEG_QUALITY)
+            if (frameData) onFrame(frameData)
+          }, CAPTURE_INTERVAL_MS)
+        }
       } catch (err) {
         console.error('[useCamera] Error accessing camera:', err)
       }
@@ -28,9 +41,10 @@ export function useCamera(videoRef) {
     setupCamera()
 
     return () => {
+      clearInterval(intervalRef.current)
       if (activeStream) {
         activeStream.getTracks().forEach(track => track.stop())
       }
     }
-  }, [videoRef])
+  }, [videoRef, canvasRef, onFrame])
 }

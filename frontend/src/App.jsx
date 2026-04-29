@@ -24,9 +24,6 @@ function AppInner() {
   const canvasRef = useRef(null)   // Phase 2: frame capture surface
   const [isStreaming, setIsStreaming] = useState(false)
 
-  // Phase 3: Start camera
-  useCamera(videoRef)
-
   const { setLastResponse } = useApp()
 
   // Phase 2: Dummy connection test using the hook
@@ -35,6 +32,12 @@ function AppInner() {
     if (data.text) {
       setLastResponse(data.text)
     }
+  })
+
+  // Phase 3 & 4: Start camera and encode frames
+  useCamera(videoRef, canvasRef, (frameData) => {
+    if (!isStreaming) setIsStreaming(true)
+    send({ type: 'image', data: frameData })
   })
 
   /**
