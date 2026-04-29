@@ -1,0 +1,74 @@
+.app {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ── HUD Header bar ── */
+.app-hud-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  /* Gradient fade to transparent so camera shows through */
+  background: linear-gradient(to bottom, rgba(8,8,8,0.72) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.app-hud-header > * {
+  pointer-events: all;
+}
+
+.app-logo {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+  text-transform: uppercase;
+  opacity: 0.85;
+  user-select: none;
+}
+
+.app-logo span {
+  opacity: 0.45;
+  font-weight: 400;
+}
+
+/* ── Timestamp ticker ── */
+.app-timestamp {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Streaming indicator ── */
+.app-stream-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.app-stream-indicator__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse-amber 1.2s ease-in-out infinite;
+}
+
+.app-stream-indicator--idle .app-stream-indicator__dot {
+  background: var(--text-muted);
+  animation: none;
+}
