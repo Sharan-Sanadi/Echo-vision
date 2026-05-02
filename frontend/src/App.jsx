@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { AppProvider, useApp } from './context/AppContext'
 import { useWebSocket } from './hooks/useWebSocket'
 import { useCamera } from './hooks/useCamera'
@@ -7,6 +7,7 @@ import CameraFeed from './components/Camera/CameraFeed'
 import ConnectionStatus from './components/StatusBar/ConnectionStatus'
 import ResponseOverlay from './components/Overlay/ResponseOverlay'
 import VoiceQuery from './components/VoiceQuery/VoiceQuery'
+import LandingPage from './components/LandingPage/LandingPage'
 import './App.css'
 
 // ─── Timestamp ticker ─────────────────────────────────────
@@ -29,7 +30,7 @@ function AppInner() {
   const { setLastResponse } = useApp()
 
   // Phase 2: Dummy connection test using the hook
-  const { send, wsRef } = useWebSocket((data) => {
+  const { send } = useWebSocket((data) => {
     console.log('[App] Received from WS:', data)
     if (data.text) {
       setLastResponse(data.text)
@@ -38,10 +39,13 @@ function AppInner() {
   })
 
   // Phase 3 & 4: Start camera and encode frames
-  useCamera(videoRef, canvasRef, (frameData) => {
-    if (!isStreaming) setIsStreaming(true)
+  const handleFrame = useCallback((frameData) => {
+    setIsStreaming(true)
     send({ type: 'image', data: frameData })
-  })
+  }, [send])
+
+  // Phase 3 & 4: Start camera and encode frames
+  useCamera(videoRef, canvasRef, handleFrame)
 
   /**
    * Phase 3 will replace this stub with useWebSocket().
@@ -86,9 +90,15 @@ function AppInner() {
 }
 
 export default function App() {
+  const [isAppStarted, setIsAppStarted] = useState(false)
+
   return (
     <AppProvider>
-      <AppInner />
+      {isAppStarted ? (
+        <AppInner />
+      ) : (
+        <LandingPage onStart={() => setIsAppStarted(true)} />
+      )}
     </AppProvider>
   )
 }

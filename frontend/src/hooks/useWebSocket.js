@@ -21,52 +21,53 @@ export function useWebSocket(onMessage) {
   const attemptRef = useRef(0)
   const mountedRef = useRef(true)
 
-  const connect = useCallback(() => {
-    if (!mountedRef.current) return
-    
-    setWsStatus('connecting')
-    const ws = new WebSocket(WS_URL)
-    wsRef.current = ws
-
-    ws.onopen = () => {
-      if (!mountedRef.current) {
-        ws.close()
-        return
-      }
-      setWsStatus('connected')
-      attemptRef.current = 0
-    }
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data)
-        if (onMessage) onMessage(data)
-      } catch (err) {
-        console.error('[WebSocket] Failed to parse message', err)
-      }
-    }
-
-    ws.onclose = () => {
-      if (!mountedRef.current) return
-      setWsStatus('disconnected')
-      wsRef.current = null
-
-      const delay = getBackoffDelay(attemptRef.current)
-      attemptRef.current += 1
-      setTimeout(() => {
-        if (mountedRef.current) connect()
-      }, delay)
-    }
-
-    ws.onerror = (err) => {
-      console.error('[WebSocket] Error', err)
-      // The onclose handler will take care of reconnection
-    }
-  }, [onMessage, setWsStatus])
-
   useEffect(() => {
     mountedRef.current = true
+    
+    function connect() {
+      if (!mountedRef.current) return
+      
+      setWsStatus('connecting')
+      const ws = new WebSocket(WS_URL)
+      wsRef.current = ws
+
+      ws.onopen = () => {
+        if (!mountedRef.current) {
+          ws.close()
+          return
+        }
+        setWsStatus('connected')
+        attemptRef.current = 0
+      }
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data)
+          if (onMessage) onMessage(data)
+        } catch (err) {
+          console.error('[WebSocket] Failed to parse message', err)
+        }
+      }
+
+      ws.onclose = () => {
+        if (!mountedRef.current) return
+        setWsStatus('disconnected')
+        wsRef.current = null
+
+        const delay = getBackoffDelay(attemptRef.current)
+        attemptRef.current += 1
+        setTimeout(() => {
+          if (mountedRef.current) connect()
+        }, delay)
+      }
+
+      ws.onerror = (err) => {
+        console.error('[WebSocket] Error', err)
+      }
+    }
+
     connect()
+
     return () => {
       mountedRef.current = false
       if (wsRef.current) {
@@ -74,7 +75,7 @@ export function useWebSocket(onMessage) {
         wsRef.current = null
       }
     }
-  }, [connect])
+  }, [onMessage, setWsStatus])
 
   const send = useCallback((payload) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {

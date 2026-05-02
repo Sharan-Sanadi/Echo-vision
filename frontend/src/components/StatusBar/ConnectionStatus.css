@@ -1,22 +1,22 @@
 .status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 10px;
+  gap: 10px;
+  padding: 6px 14px;
   border-radius: var(--radius, 4px);
   background: var(--bg-glass, rgba(8, 8, 8, 0.72));
   border: 1px solid var(--border, rgba(245, 166, 35, 0.18));
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
 }
 
 .status-label {
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   font-weight: 500;
 }
